@@ -1,39 +1,213 @@
-<div #content id="badge" >
+<div style="display : inline-block ;width: 50rem">
 
-  <div *ngFor="let element of container">
-    <div  [ngClass]="selectedElement== element.id ? 'selected' : '' " [ngStyle]="element.style"
-          cdkDragBoundary="#badge" cdkDrag
-          (click)="selectElement(element.id , element)">
-      Drag
+  <mat-tab-group style="display : inline-block ;">
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+<!--        <mat-icon class="example-tab-icon">thumb_up</mat-icon>-->
+        Badge fromat
+      </ng-template>
+
+      <div>
+        <h2>Badge fromat</h2>
+        <button class="btn" (click)="selectBadge(204 ,325)"> 54*86 Badge</button>
+        <button class="btn" (click)="selectBadge(222 ,313)" > 59*83 Badge</button>
+        <button class="btn" (click)="selectBadge(374 ,253)" > 99*67 Badge</button>
+      </div>
+    </mat-tab>
+
+
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+<!--        <mat-icon class="example-tab-icon">thumb_up</mat-icon>-->
+        Add Element
+      </ng-template>
+      <div>
+        <h1>Add Element</h1>
+        <button (click)="addElement('text')">Add Text</button>
+        <button (click)="addElement('image')">Add Image</button>
+        <button (click)="addElement('shape')">Add Shape</button>
+        <div>
+          <button (click)="deselectElement()">Deselect</button>
+        </div>
+      </div>
+    </mat-tab>
+
+
+
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+<!--        <mat-icon class="example-tab-icon">thumb_up</mat-icon>-->
+        Generate
+      </ng-template>
+
+
+      <h2>Confirm</h2>
+      <button (click)="try()" class="btn">Preview</button>
+      <!--  <button (click)="generateBadges()" class="btn">Generate</button>-->
+    </mat-tab>
+
+
+  </mat-tab-group>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+<div   style="display : inline-block ;width: 40rem" >
+
+  <div #content id="badge" [ngStyle]="main_style" >
+    <div *ngFor="let element of container">
+      <div  [ngClass]="selectedElement== element.id ? 'selected' : '' " [ngStyle]="element.style"
+            cdkDragBoundary="#badge" cdkDrag (click)="selectElement(element.id , element)">
+
+        <p *ngIf="element.type == 'text'">{{element.content}}</p>
+        <img *ngIf="element.type == 'image'" src="../assets/logo-talan.png"  style="width: 50px ; height: 30px"/>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <img  id="class-badge" [src]="url" alt="noo image">
+  </div>
+
+</div>
+
+
+
+
+
+<div  cdkDrag class="palette">
+
+<div>
+  <h1> Palette</h1>
+
+    <div *ngIf="!(selectedElement == undefined  || element.type != 'text')">
+      Text
+      <input matInput placeholder="Text" [(ngModel)]="element.content" >
+    </div>
+
+  <div *ngIf="selectedElement == undefined  || element.type != 'text'">
+    Text
+    <input disabled matInput placeholder="Text">
+  </div>
+
+    <div>
+      Font Size :
+      <mat-slider [disabled]="selectedElement == undefined || element.type != 'text' "
+                  thumbLabel
+                  [displayWith]="formatLabel" tickInterval="1" min="10" max="100"
+                  (change)="modifySize('font-size' , $event.value)"
+                  [value]="getValue(element ? element.style['font-size'] : null)"></mat-slider>
+
+    </div>
+
+    <div >
+      Font Family :
+<!--                  <mat-form-field appearance="fill">-->
+<!--                    <mat-label>Select</mat-label>-->
+<!--      <mat-select [disabled]="selectedElement == undefined  || element.type != 'text'"-->
+<!--                  [(ngModel)]="element?.style['font-style']">-->
+<!--                      <mat-option value="option">Option</mat-option>-->
+<!--                    </mat-select>-->
+<!--                  </mat-form-field>-->
+    </div>
+
+    <div >
+      Font Style :
+      <mat-form-field appearance="fill" >
+        <mat-label>Font Style</mat-label>
+        <mat-select [disabled]="selectedElement == undefined  || element.type != 'text'"
+                    [(ngModel)]="element?.style['font-style']">
+          <mat-option value="oblique">Oblique</mat-option>
+          <mat-option value="normal">Normal</mat-option>
+          <mat-option value="italic">Italic</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div>
+      Font weight :
+      <mat-form-field appearance="fill">
+        <mat-label>Font Weight</mat-label>
+        <mat-select [disabled]="selectedElement == undefined  || element.type != 'text'"
+                    [(ngModel)]="element?.style['font-weight']">
+          <mat-option value="bold">Bold</mat-option>
+          <mat-option value="normal">Normal</mat-option>
+          <!--                <mat-option value="option">Option</mat-option>-->
+          <!--                <mat-option value="option">Option</mat-option>-->
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div>
+      Text Position :
+      <mat-form-field appearance="fill">
+        <mat-label>Text Position</mat-label>
+        <mat-select [disabled]="selectedElement == undefined  || element.type != 'text'"
+                    [(ngModel)]="element?.style['text-align']">
+          <mat-option value="left">Left</mat-option>
+          <mat-option value="right">Right</mat-option>
+          <mat-option value="center">Center</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div>
+      Color :
+      <input [cpDisabled]="selectedElement == undefined  || element.type != 'text'"
+             [cpPosition]="'top-right'"
+             [(colorPicker)]="element?.style['color']"
+             [style.background]="element?.style['color']"/>
+    </div>
+
+    <div>
+      Background :
+      <input [disabled]="selectedElement == undefined  || element.type == 'text'"
+             [cpPosition]="'top-right'"
+             [(colorPicker)]="element?.style['background']"
+             [style.background]="element?.style['background']"/>
+    </div>
+
+    <div>
+      width :
+      <mat-slider [disabled]="selectedElement == undefined"
+                  thumbLabel
+                  [displayWith]="formatLabel"
+                  tickInterval="1"
+                  min="10"
+                  max="1000"
+                  (change)="modifySize('width' , $event.value)"
+                  [value]="getValue(element ? element.style['width'] : null)"></mat-slider>
+
+    </div>
+
+    <div>
+      height :
+      <mat-slider [disabled]="selectedElement == undefined"
+                  thumbLabel [displayWith]="formatLabel"
+                  tickInterval="1"
+                  min="10"
+                  max="1000"
+                  (change)="modifySize('height' , $event.value)"
+                  [value]="getValue(element ? element.style['height'] : null)"></mat-slider>
     </div>
   </div>
 
 
 </div>
-
-
-
-<div>
-  <img  id="class-badge" [src]="url" alt="noo image">
-</div>
-
-<button (click)="try()">Test</button>
-
-<div>
-  <h1>Add Element</h1>
-  <button (click)="addElement()">Add +</button>
-</div>
-
-<div>
-  <h1> Palette</h1>
-  <button (click)="modifyStyle( 'width' , true )" class="btn"> Width + </button>
-  <button (click)="modifyStyle( 'width' , false )" > Width - </button>
-  <button (click)="modifyStyle( 'height' , true )" > Height + </button>
-  <button (click)="modifyStyle( 'height' , false )" > Height - </button>
-  <button (click)="modifyStyle( 'font-size' , true )" > Font Size + </button>
-  <button (click)="modifyStyle( 'font-size' , false )" > Font Size - </button>
-</div>
-
 
 
 

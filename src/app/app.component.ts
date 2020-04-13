@@ -1,10 +1,12 @@
 import {Component, ViewChild} from '@angular/core';
 import htmlToImage from 'html-to-image';
-
+import { TextStyle , ShapeStyle , ImageStyle } from './Default'
+import {MatSliderChange} from '@angular/material';
 
 export class Element {
   id : number ;
   type : string ;
+  content : string ;
   style : any ;
 }
 
@@ -16,6 +18,8 @@ export class Element {
 })
 export class AppComponent {
 
+  users = [ 'bilel' , 'skander' , 'nouha' , 'oussema'] ;
+
   container :Element[] = [] ;
 
   @ViewChild('content' ,null) content;
@@ -24,23 +28,19 @@ export class AppComponent {
   selectedElement : number ;
   element : Element ;
 
-  // element2 = {
-  //   'width': '50px' ,
-  //   'height': '50px',
-  //   'border': 'solid 1px #ccc',
-  //   'color': "rgba(0, 0, 0, 0.87)" ,
-  //   'cursor': 'move' ,
-  //   'display': 'flex' ,
-  //   'justify-content': 'center' ,
-  //   'align-items': 'center' ,
-  //   'text-align':'center' ,
-  //   'background': '#fff' ,
-  //   'position': 'relative' ,
-  //   'z-index': '2' ,
-  //   'transition': 'box-shadow 200ms cubic-bezier(0, 0, 0.2, 1)'
-  // };
+  main_style = {
+    'background-color': 'transparent' ,
+    'margin': '0  0 100px',
+    'display' : 'inline-block',
+    'height': '200px' ,
+    'width': '200px',
+    'border': '2px solid black' ,
+  };
+  def: 'any';
+
 
   try(){
+    this.selectedElement =null ;
     this.transform().then(res => this.url= res)
 
   }
@@ -58,43 +58,45 @@ export class AppComponent {
   }
 
 
-  modifyStyle( attribute: string, direction: boolean) {
+  modifySize( attribute: string, value : number ) {
     if(this.selectedElement){
-      let value = (Number)(this.element.style[attribute].substring( 0 ,this.element.style[attribute].length-2)) ;
-      if (direction){
-        value ++ ;
-      }
-      else {
-        value -- ;
-      }
       this.element.style[attribute] = value.toString()+"px"
     }
-
   }
 
-  addElement() {
-    let id = this.container.length +1  ;
-    let style = {
-      'width': '50px' ,
-      'height': '50px',
-      'font-size' : '20px' ,
-      'background': '#fff' ,
-      'color': "rgba(0, 0, 0, 0.87)" ,
-      // 'border': 'solid 1px #ccc',
+  formatLabel(value: number) {
+    return value + 'px';
+  }
 
-      'cursor': 'move' ,
-      'display': 'flex' ,
-      'justify-content': 'center' ,
-      'align-items': 'center' ,
-      'text-align':'center' ,
-      'position': 'relative' ,
-      'z-index': '3' ,
-      'transition': 'box-shadow 200ms cubic-bezier(0, 0, 0.2, 1)'
-    };
+  getValue(attribute: string) {
+    if(attribute){
+      return (Number)(attribute.substring( 0 ,attribute.length-2)) ;
+    }
+  }
+
+
+  addElement(type : string) {
+    let id = this.container.length +1  ;
+    let style ;
+    let content  ;
+    if(type == 'text') {
+      style = Object.assign({}, TextStyle);
+      content = 'Some text'
+    }
+    else if(type == 'shape'){
+      style = Object.assign({}, ShapeStyle);
+      content = '' ;
+    }
+    else if(type == 'image'){
+      style = Object.assign({}, ImageStyle);
+      content = ''
+    }
+
     let element : Element = {
       id : id ,
-      type : "shape" ,
-      style : style
+      type : type ,
+      style : style ,
+      content : content
     };
     this.container.push(element)
   }
@@ -104,4 +106,25 @@ export class AppComponent {
     this.element = e ;
     this.selectedElement = id ;
   }
+
+  deselectElement(){
+    this.selectedElement = null ;
+    this.element = null ;
+  }
+
+  selectBadge(h: number, w : number) {
+    this.main_style = {
+      'background-color': 'transparent' ,
+      'margin': '0  0 100px',
+      'display' : 'inline-block',
+      'height': h+'px' ,
+      'width': w+'px',
+      'border': '2px solid black' ,
+    };
+  }
+
+
+
+
+
 }
